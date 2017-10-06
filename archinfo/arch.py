@@ -4,11 +4,6 @@ import re
 from archinfo.archerror import ArchError
 
 try:
-    import pyvex as _pyvex
-except ImportError:
-    _pyvex = None
-
-try:
     import unicorn as _unicorn
 except ImportError:
     _unicorn = None
@@ -26,7 +21,7 @@ class Endness:
     """ Endness specifies the byte order for integer values
 
     :cvar LE:      little endian, least significant byte is stored at lowest address
-    :cvar BE:      big endian, most significant byte is stored at lowest address 
+    :cvar BE:      big endian, most significant byte is stored at lowest address
     :cvar ME:      Middle-endian. Yep.
     """
     LE = "Iend_LE"
@@ -94,11 +89,8 @@ class Arch(object):
         if endness not in (Endness.LE, Endness.BE, Endness.ME):
             raise ArchError('Must pass a valid VEX endness: Endness.LE or Endness.BE')
 
-        if _pyvex:
-            self.vex_archinfo = _pyvex.default_vex_archinfo()
+        self.endness = endness
         if endness == Endness.BE:
-            if self.vex_archinfo:
-                self.vex_archinfo['endness'] = _pyvex.vex_endness_from_string('VexEndnessBE')
             self.memory_endness = Endness.BE
             self.register_endness = Endness.BE
             if _capstone:
@@ -138,7 +130,6 @@ class Arch(object):
         Produce a copy of this instance of this arch.
         """
         new_arch = type(self)(self.memory_endness)
-        new_arch.vex_archinfo = self.vex_archinfo.copy()
 
         return new_arch
 
@@ -384,9 +375,6 @@ class Arch(object):
     dynamic_tag_translation = {}
     symbol_type_translation = {}
     got_section_name = ''
-
-    vex_archinfo = None
-
 
 arch_id_map = []
 
