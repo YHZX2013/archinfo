@@ -17,6 +17,7 @@ class ArchX86(Arch):
         if endness != Endness.LE:
             raise ArchError('Arch i386 must be little endian')
         super(ArchX86, self).__init__(endness)
+        self.x86_cr0 = 0xFFFFFF
 
     @property
     def capstone(self):
